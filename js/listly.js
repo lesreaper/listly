@@ -14,9 +14,7 @@ var Listly =  function() {
       self.tasks.push(task_name);
       // If successfully saved (no errors), we display information to user
       if (save()) {
-        // jQuery, find item with #tasks ID, here the text in the field because it is passed from the task_name in "function addTask(task_name)",
-        // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
-        $('#tasks').append('<li class="list-group-item">' + task_name + '</li>');
+        appendToList(task_name);
         // Leave this function and continue with the previous action
         return true;
       }
@@ -26,30 +24,92 @@ var Listly =  function() {
       }
     }
 
-    function load() {
-      // Take the information we stored in localStorage.tasks and bring it back into an array we can access in
-      //  our document, the self.tasks array
-      self.tasks = JSON.parse(localStorage.tasks);
-      // $.each is a jQuery function that iterate through an array. It takes two arguments. The first is what
-      //  we will be iterating through, in this case the self.tasks array. The second is the function we will
-      //  apply to each item as we go through the array. This function needs two arguments as well. In this case,
-      //  index is the position of the item that determines if it exists (if it doesn't the function stops), and
-      //  the variable we are passing, which is the value we wish the value in the array to have, here task_name.
-      //  This allows us in the next line to insert the item as a variable called "task_name"
-      $.each(self.tasks, function(index, task_name) {
-      // jQuery, find item with #tasks ID, here the text in the field because it is the data gleamed from the self.tasks array,
-      // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
-        $('#tasks').append('<li class="list-group-item">' + task_name + '</li>');
+    function appendToList(task_name) {
+      // Grab the list item template from the HTML, clone so we don't modify original
+      var li = $('#list_item_template').clone();
+      // Remove the ID of the elemnt, so that we're not duplicating the same ID's across the multiple
+      //   items we're creating
+      li.removeAttr('id');
+
+      //Find the label within the li variable, and add the text from the passed task_name argument
+      li.find('label').text(task_name);
+
+      //Unhide the new LI class tag
+      li.removeClass('hidden');
+
+      // Activate the delete button.
+      li.find('.btn-danger').click(function() {
+
+        //Remove it from the array
+
+
+        //Save the array to local storage
+
+        // Removes it from the <ol> on the page
+        li.remove();
+
       });
+
+      // jQuery, find item with #tasks ID, here the text in the field because it is passed from the task_name in "function addTask(task_name)",
+      // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
+      // Pushing to the end of the list
+      $('#tasks').append(li);
+    }
+
+
+    // Pass a form to the arguemnt show_form_error
+    function show_form_error(form) {
+
+    // Grab the passed form, and find the class "alert" tied to that form. html an error phrase to it. Remove the class
+    //  hidden from the alert form.
+      $(form).find('.alert')
+        .html('Something went wrong')
+        .removeClass('hidden');
+    }
+
+    // This is a check of the browser supports local storage
+    function supportsLocalStorage() {
+      try {
+
+        // return true if localstore is supported and it's not null
+        return 'localStorage' in window && window.localStorage !== null;
+
+      } catch(err) {
+
+      }
+
+    }
+
+    function load() {
+      // Because local storage may not exist on the first run through or if we clear our Localstorage, then there would be
+      // an error when we try to parse the data and assign it to self.tasks. So we do the if statement to check if
+      // localstorage is supported and if the the localstorage has somethign in it.
+      if (supportsLocalStorage && localStorage.tasks) {
+        // Take the information we stored in localStorage.tasks and bring it back into an array we can access in
+        //  our document, the self.tasks array
+        self.tasks = JSON.parse(localStorage.tasks);
+        // $.each is a jQuery function that iterate through an array. It takes two arguments. The first is what
+        //  we will be iterating through, in this case the self.tasks array. The second is the function we will
+        //  apply to each item as we go through the array. This function needs two arguments as well. In this case,
+        //  index is the position of the item that determines if it exists (if it doesn't the function stops), and
+        //  the variable we are passing, which is the value we wish the value in the array to have, here task_name.
+        //  This allows us in the next line to insert the item as a variable called "task_name"
+        $.each(self.tasks, function(index, task_name) {
+        // jQuery, find item with #tasks ID, here the text in the field because it is the data gleamed from the self.tasks array,
+        // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
+          appendToList(task_name);
+        });
+      }
     }
 
     function save() {
-      try {
+      // If the localstorage feature is available, then proceed
+      if (supportsLocalStorage()) {
         // Save it to local storage, localstore.x where x equals anything you want to call it. It needs to be stored as JSON
         // for local storage, so we need to turn our self.tasks array into string data first.
         return (localStorage.tasks = JSON.stringify(self.tasks));
       }
-      catch(err) {
+      else {
         // any error reporting for UI would go here
         return false;
       }
@@ -73,6 +133,8 @@ var Listly =  function() {
       //  an argument to be passed (See line 10), then we clear the field string value using jQuery method field.val()
       if (addTask(task_name)) {
         field.val('');
+      } else {
+        show_form_error(this);
       }
       // after the event handler fires, jQuery focus on the field and make it selected. Just good UI.
       field.focus().select();
