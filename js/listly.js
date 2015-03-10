@@ -9,12 +9,13 @@ var Listly =  function() {
 
     function addTask(task_name) {
 
-      // Add task name to task array - Did not reset task_name variable in the event handler, so can use here
-      // Self is the object. Self.tasks is the actual array.
-      self.tasks.push(task_name);
+      // Taking the task_name string from the arguemnt and converting it to an object and then assigning
+      //  that object variable to task
+      var task = new Task({ name: task_name });
+      self.tasks.push(task);
       // If successfully saved (no errors), we display information to user
       if (save()) {
-        appendToList(task_name);
+        appendToList(task);
         // Leave this function and continue with the previous action
         return true;
       }
@@ -24,7 +25,7 @@ var Listly =  function() {
       }
     }
 
-    function appendToList(task_name) {
+    function appendToList(task) {
       // Grab the list item template from the HTML, clone so we don't modify original
       var li = $('#list_item_template').clone();
       // Remove the ID of the elemnt, so that we're not duplicating the same ID's across the multiple
@@ -32,7 +33,7 @@ var Listly =  function() {
       li.removeAttr('id');
 
       //Find the label within the li variable, and add the text from the passed task_name argument
-      li.find('label').text(task_name);
+      li.find('label').text(task.name);
 
       //Unhide the new LI class tag
       li.removeClass('hidden');
@@ -41,7 +42,7 @@ var Listly =  function() {
       li.find('.btn-danger').click(function() {
 
         //Remove it from Array
-        self.tasks.splice(self.tasks.indexOf(task_name), 1);
+        self.tasks.splice(self.tasks.indexOf(task), 1);
 
         //Save the array to local storage
         save();
@@ -95,10 +96,10 @@ var Listly =  function() {
         //  index is the position of the item that determines if it exists (if it doesn't the function stops), and
         //  the variable we are passing, which is the value we wish the value in the array to have, here task_name.
         //  This allows us in the next line to insert the item as a variable called "task_name"
-        $.each(self.tasks, function(index, task_name) {
+        $.each(self.tasks, function(index, task) {
         // jQuery, find item with #tasks ID, here the text in the field because it is the data gleamed from the self.tasks array,
         // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
-          appendToList(task_name);
+          appendToList(task);
         });
       }
     }
