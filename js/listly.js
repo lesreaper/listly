@@ -40,10 +40,11 @@ var Listly =  function() {
       // Activate the delete button.
       li.find('.btn-danger').click(function() {
 
-        //Remove it from the array
-
+        //Remove it from Array
+        self.tasks.splice(self.tasks.indexOf(task_name), 1);
 
         //Save the array to local storage
+        save();
 
         // Removes it from the <ol> on the page
         li.remove();
