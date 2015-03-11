@@ -39,7 +39,7 @@ var Listly =  function() {
       li.removeClass('hidden');
 
       // Activate the delete button.
-      li.find('.btn-danger').click(function() {
+      li.find('button.delete').click(function() {
 
         //Remove it from Array
         self.tasks.splice(self.tasks.indexOf(task), 1);
@@ -52,10 +52,32 @@ var Listly =  function() {
 
       });
 
+
+        li.find('button.edit').click(task, createEditForm);
+
       // jQuery, find item with #tasks ID, here the text in the field because it is passed from the task_name in "function addTask(task_name)",
       // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
       // Pushing to the end of the list
       $('#tasks').append(li);
+    }
+
+
+
+    function createEditForm(ev) {
+      var task, li, edit_form, name_field;
+      task = ev.data;
+      li = $(this).closest('li');
+
+
+      // Make the task name editable
+      edit_form = $('#edit_form_template').clone().removeAttr('id');
+      edit_form.removeClass('hidden');
+      name_field = edit_form.find('.edit-task-name');
+      name_field.data('task-id', task.id).val(task.name);
+
+
+      li.find('label').replaceWith(edit_form);
+      name_field.focus().select();
     }
 
 
@@ -86,23 +108,27 @@ var Listly =  function() {
       // Because local storage may not exist on the first run through or if we clear our Localstorage, then there would be
       // an error when we try to parse the data and assign it to self.tasks. So we do the if statement to check if
       // localstorage is supported and if the the localstorage has somethign in it.
-      if (supportsLocalStorage && localStorage.tasks) {
+      if (supportsLocalStorage() && localStorage.tasks) {
+        var task;
         // Take the information we stored in localStorage.tasks and bring it back into an array we can access in
         //  our document, the self.tasks array
-        self.tasks = JSON.parse(localStorage.tasks);
+        var task_objects = JSON.parse(localStorage.tasks);
         // $.each is a jQuery function that iterate through an array. It takes two arguments. The first is what
         //  we will be iterating through, in this case the self.tasks array. The second is the function we will
         //  apply to each item as we go through the array. This function needs two arguments as well. In this case,
         //  index is the position of the item that determines if it exists (if it doesn't the function stops), and
         //  the variable we are passing, which is the value we wish the value in the array to have, here task_name.
         //  This allows us in the next line to insert the item as a variable called "task_name"
-        $.each(self.tasks, function(index, task) {
+        $.each(task_objects, function(index, task_properties) {
         // jQuery, find item with #tasks ID, here the text in the field because it is the data gleamed from the self.tasks array,
         // and add this to an ordered list using <li> elements. Because it is an <ol>, jQuery knows to just add the <li> statements one after another.
-          appendToList(task);
-        });
-      }
+        task = new Task(task_properties);
+        self.tasks.push(task);
+        appendToList(task);
+      });
     }
+  }
+
 
     function save() {
       // If the localstorage feature is available, then proceed
