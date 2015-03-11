@@ -78,9 +78,25 @@ var Listly =  function() {
 
       li.find('label').replaceWith(edit_form);
       name_field.focus().select();
+      //save button handler
+      edit_form.submit(updateTask) ;
+
+
+
     }
 
-
+    function updateTask(ev) {
+      ev.preventDefault();
+      var field = $(this.elements.task_name);
+      var id = field.data('task-id');
+      $.each(self.tasks, function(index, task) {
+        if (task.id == id) {
+          task.name = field.val();
+          return false;
+        }
+      });
+      save();
+    }
     // Pass a form to the arguemnt show_form_error
     function show_form_error(form) {
 
