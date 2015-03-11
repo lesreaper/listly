@@ -1,3 +1,4 @@
+
 <!doctype html>
 
 <html lang="en">
@@ -11,41 +12,44 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.css">
   <link rel="stylesheet" href="css/listly.css">
   <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>;
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
 
 <body>
 
-  <div class="well col-sm-6 col-sm-offset-3 col-xs-12">
+  <div class="well col-sm-8 col-sm-offset-2 col-xs-12">
     <h1>Listly</h1>
 
     <ol id="tasks" class="list-group">
       <li id="list_item_template" class="list-group-item hidden">
-        <label></label>
+        <label><input type="checkbox" name="completed"></label>
         <div class="btn-group">
           <button class="btn btn-sm btn-danger delete"><i class="fa fa-trash-o fa-lg"></i></button>
-          <button class="btn btn-sm btn-success edit"><i class="fa fa-pencil fa-lg"></i> Edit</button>
+          <button class="btn btn-sm btn-success edit"><i class="fa fa-pencil fa-lg"></i></button>
         </div>
       </li>
     </ol>
 
     <form role="form" id="new_task" class="form-inline">
+
       <label>
         <input type="text" name="task_name" class="form-control">
         <input type="submit" value="Add Task" class="btn btn-sm btn-primary">
       </label>
+
       <div class="alert alert-danger alert-dismissable hidden" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="fa fa-exclamation-triangle"></i>
         Oops! There was a problem saving your tasks.
       </div>
+
     </form>
 
     <form id="edit_form_template" class="form-inline hidden">
       <input type="text" class="form-control edit-task-name" name="task_name">
       <input type="submit" value="Save" class="btn btn-sm btn-success">
-      <button type="button" class="btn btn-sm btn-default">Cancel</button>
+      <button type="button" class="btn btn-sm btn-default cancel">Cancel</button>
     </form>
 
   </div>
@@ -56,6 +60,6 @@
 
   <!-- Our custom scripts -->
   <script src="js/task.js"></script>
-  <script src="js/listly.js"></script>
+  <script src="js/listly2.js"></script>
 </body>
 </html>

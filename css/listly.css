@@ -3,3 +3,10 @@
   top: 8px;
   right: 8px;
 }
+label.completed {
+  text-decoration: line-through;
+}
+label {
+  width: 80%;
+  word-wrap: break-word;
+}

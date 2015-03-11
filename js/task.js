@@ -1,6 +1,6 @@
 var Task = function() {
   var self = this;
-  self.counter = 0;
+  self.counter = 1;
 
   function getOrSetId(id) {
     if (!id) {
@@ -18,8 +18,21 @@ var Task = function() {
 
   function Task(properties) {
     this.name = properties.name;
+    this.position = properties.position;
+    this.completed = !!properties.completed;
     this.id = getOrSetId(properties.id);
   }
+
+  Task.getTaskById = function(id) {
+    var task;
+    $.each(listly.tasks, function(index, current_task) {
+      if (current_task.id == id) {
+        task = current_task;
+        return false;
+      }
+    });
+    return task;
+  };
 
   return Task;
 }();

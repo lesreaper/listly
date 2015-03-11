@@ -63,27 +63,24 @@ var Listly =  function() {
 
 
 
-    function createEditForm(ev) {
-      var task, li, edit_form, name_field;
-      task = ev.data;
-      li = $(this).closest('li');
+      function createEditForm(ev) {
+        var task, li, edit_form, name_field, label;
+        task = ev.data;
+        li = $(this).closest('li');
+        label = li.find('label');
 
+        edit_form = $('#edit_form_template').clone().removeAttr('id');
+        edit_form.removeClass('hidden');
+        name_field = edit_form.find('.edit-task-name');
+        name_field.data('task-id', task.id).val(task.name);
 
-      // Make the task name editable
-      edit_form = $('#edit_form_template').clone().removeAttr('id');
-      edit_form.removeClass('hidden');
-      name_field = edit_form.find('.edit-task-name');
-      name_field.data('task-id', task.id).val(task.name);
+        label.addClass('hidden');
+        edit_form.insertBefore(label);
+        name_field.focus().select();
 
-
-      li.find('label').replaceWith(edit_form);
-      name_field.focus().select();
-      //save button handler
-      edit_form.submit(updateTask) ;
-
-
-
-    }
+        // Save button handler
+        edit_form.submit(updateTask);
+      }
 
     function updateTask(ev) {
       ev.preventDefault();
@@ -95,8 +92,19 @@ var Listly =  function() {
           return false;
         }
       });
+
+      removeEditForm(this);
       save();
     }
+
+    function removeEditForm(form) {
+      form = $(form);
+      $(this).siblings('label').removeClass('hidden');
+      $(this).siblings('btn-group').removeClass('hidden');
+      $(this).remove();
+    }
+
+
     // Pass a form to the arguemnt show_form_error
     function show_form_error(form) {
 
